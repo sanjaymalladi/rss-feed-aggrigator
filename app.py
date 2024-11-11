@@ -28,7 +28,7 @@ def generate_rss():
 
     # Add channel metadata
     ET.SubElement(channel, "title").text = "Aggregated AI News Feed"
-    ET.SubElement(channel, "link").text = "http://yourdomain.com/rss"  # Update with your domain when deployed
+    ET.SubElement(channel, "link").text = "https://rss-feed-aggrigator.onrender.com/rss"  # Update with your domain when deployed
     ET.SubElement(channel, "description").text = "An aggregated RSS feed from multiple AI news sources"
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "lastBuildDate").text = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
