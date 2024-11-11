@@ -36,6 +36,19 @@ def generate_rss():
     ET.SubElement(channel, "lastBuildDate").text = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
     
     # Fetch and parse each RSS feed, then add each item to the combined feed
+def generate_rss():
+    # Create the root RSS element
+    rss = ET.Element("rss", version="2.0")
+    channel = ET.SubElement(rss, "channel")
+    
+    # Add channel metadata
+    ET.SubElement(channel, "title").text = "Aggregated AI News Feed"
+    ET.SubElement(channel, "link").text = "https://rss-feed-aggrigator.onrender.com/rss"  # Update with your domain when deployed
+    ET.SubElement(channel, "description").text = "An aggregated RSS feed from multiple AI news sources"
+    ET.SubElement(channel, "language").text = "en-us"
+    ET.SubElement(channel, "lastBuildDate").text = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
+    
+    # Fetch and parse each RSS feed, then add each item to the combined feed
     for url in rss_urls:
         try:
             feed = feedparser.parse(url)
@@ -59,16 +72,15 @@ def generate_rss():
                 # Handle images
                 if "media_thumbnail" in entry:
                     image_url = entry.media_thumbnail[0]["url"]
-                    image_data = requests.get(image_url).content
-                    image = Image.open(BytesIO(image_data))
-                    image.save(f"static/images/{os.path.basename(image_url)}")
-                    ET.SubElement(item, "enclosure").set("url", f"/static/images/{os.path.basename(image_url)}")
+                    ET.SubElement(item, "enclosure").set("url", image_url)
+                    ET.SubElement(item, "image").set("url", image_url)
         except Exception as e:
             print(f"Error processing feed {url}: {e}")
             continue
     
     # Convert the XML tree to a string and return it as a response
     return ET.tostring(rss, encoding="utf-8", xml_declaration=True)
+
 
 @app.route("/rss")
 def rss_feed():
