@@ -1,4 +1,5 @@
 from flask import Flask, Response
+from flask_cors import CORS
 import feedparser
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -8,6 +9,7 @@ from io import BytesIO
 from PIL import Image
 
 app = Flask(__name__)
+CORS(app)  # This will allow all domains to access your API
 
 # List of RSS feed URLs
 rss_urls = [
@@ -28,19 +30,6 @@ def generate_rss():
     # Create the root RSS element
     rss = ET.Element("rss", version="2.0")
     channel = ET.SubElement(rss, "channel")
-    # Add channel metadata
-    ET.SubElement(channel, "title").text = "Aggregated AI News Feed"
-    ET.SubElement(channel, "link").text = "https://rss-feed-aggrigator.onrender.com/rss"  # Update with your domain when deployed
-    ET.SubElement(channel, "description").text = "An aggregated RSS feed from multiple AI news sources"
-    ET.SubElement(channel, "language").text = "en-us"
-    ET.SubElement(channel, "lastBuildDate").text = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
-    
-    # Fetch and parse each RSS feed, then add each item to the combined feed
-def generate_rss():
-    # Create the root RSS element
-    rss = ET.Element("rss", version="2.0")
-    channel = ET.SubElement(rss, "channel")
-    
     # Add channel metadata
     ET.SubElement(channel, "title").text = "Aggregated AI News Feed"
     ET.SubElement(channel, "link").text = "https://rss-feed-aggrigator.onrender.com/rss"  # Update with your domain when deployed
