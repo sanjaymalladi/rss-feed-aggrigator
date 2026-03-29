@@ -23,7 +23,8 @@ rss_urls = [
     "https://www.theverge.com/rss/index.xml",
     "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
     "https://www.wired.com/feed/rss",
-    "https://feeds.arstechnica.com/arstechnica/index"
+    "https://feeds.arstechnica.com/arstechnica/index",
+    "https://export.arxiv.org/rss/cs.AI"
 ]
 
 def generate_rss():
