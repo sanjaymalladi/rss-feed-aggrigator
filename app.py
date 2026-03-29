@@ -37,6 +37,32 @@ def generate_rss():
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "lastBuildDate").text = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
     
+    # Fetch HuggingFace Daily Papers
+    try:
+        current_date = datetime.utcnow().strftime("%Y-%m-%d")
+        hf_url = f"https://huggingface.co/api/daily_papers?date={current_date}"
+        hf_res = requests.get(hf_url, timeout=10)
+        if hf_res.status_code == 200:
+            hf_data = hf_res.json()
+            for obj in hf_data:
+                paper = obj.get("paper", {})
+                item = ET.SubElement(channel, "item")
+                ET.SubElement(item, "title").text = f"[HF Paper] {paper.get('title', 'Unknown Title')}"
+                ET.SubElement(item, "link").text = f"https://huggingface.co/papers/{paper.get('id', '')}"
+                ET.SubElement(item, "description").text = paper.get('summary', 'No summary available.')
+                
+                pub_date = paper.get('publishedAt', '')
+                try:
+                    dt = datetime.strptime(pub_date, "%Y-%m-%dT%H:%M:%S.%fZ")
+                    pub_date_str = dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
+                except Exception:
+                    pub_date_str = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
+                    
+                ET.SubElement(item, "pubDate").text = pub_date_str
+                ET.SubElement(item, "guid").text = f"https://huggingface.co/papers/{paper.get('id', '')}"
+    except Exception as e:
+        print(f"Error processing HF papers: {e}")
+
     # Fetch and parse each RSS feed, then add each item to the combined feed
     for url in rss_urls:
         try:
